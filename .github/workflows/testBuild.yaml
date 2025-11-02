@@ -1,0 +1,22 @@
+name: test build
+
+on:
+  push:
+    branches:
+      - "dependabot/go_modules/**"
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v5
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: "./go.mod"
+
+      - name: Install and Build 🔧
+        working-directory: ./
+        run: go build .

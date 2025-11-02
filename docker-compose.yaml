@@ -1,0 +1,12 @@
+services:
+  m365-mailbox-report:
+    build: ghcr.io/lukas-nielsen/m365-mailbox-reporter
+    environment:
+      - AZURE_TENANT_ID=dein_tenant_id
+      - AZURE_CLIENT_ID=dein_client_id
+      - AZURE_CLIENT_SECRET=dein_client_secret
+      - BOOKSTACK_TOKEN_ID=dein_bookstack_token_id
+      - BOOKSTACK_TOKEN_SECRET=dein_bookstack_token_secret
+      - BOOKSTACK_PAGE_ID=deine_page_id
+      - BOOKSTACK_URL=https://bookstack.example.com
+    restart: unless-stopped

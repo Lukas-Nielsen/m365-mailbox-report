@@ -1,0 +1,51 @@
+name: Publish Docker image
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  push_to_registry:
+    name: Push Docker image to Docker Hub
+    permissions:
+      packages: write
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v5
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/lukas-nielsen/m365-mailbox-report
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "stable"
+          go-version-file: "./go.mod"
+
+      - name: build go amd64
+        run: |
+          GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -a -o ./build/amd64 .
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
