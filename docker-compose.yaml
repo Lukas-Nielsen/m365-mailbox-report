@@ -10,3 +10,8 @@ services:
       - BOOKSTACK_PAGE_ID=deine_page_id
       - BOOKSTACK_URL=https://bookstack.example.com
     restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+        # Run every day
+        delay: 1d
